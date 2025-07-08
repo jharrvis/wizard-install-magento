@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corefinity Magento Wizard</title>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Main CSS (Keeping original styles for consistency) -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <!-- Custom CSS (Updated for modern design and responsiveness) -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <!-- Main Container -->
+    <div class="wizard-container">
+      <!-- Header -->
+      <div class="wizard-header">
+        <div class="header-left">
+          <img src="assets/img/logo.svg" alt="Corefinity" class="header-logo" />
+          <h1 class="wizard-title">Magento Wizard</h1>
+        </div>
+        <div class="wizard-progress">
+          <span class="progress-text"
+            >Step <span id="currentStep">1</span> of 5</span
+          >
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+        <div class="wizard-actions">
+          <button class="button button-secondary" id="backBtn" disabled>
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </button>
+          <button class="button" id="nextBtn">
+            Next Step
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="wizard-content">
+        <!-- Sidebar Navigation -->
+        <div class="wizard-sidebar">
+          <nav class="wizard-nav">
+            <div class="nav-item active" data-step="1">
+              <div class="nav-icon">
+                <i class="fas fa-store"></i>
+              </div>
+              <div class="nav-content">
+                <span class="nav-title">Store Info</span>
+              </div>
+            </div>
+            <div class="nav-item" data-step="2">
+              <div class="nav-icon">
+                <i class="fas fa-cogs"></i>
+              </div>
+              <div class="nav-content">
+                <span class="nav-title">System</span>
+              </div>
+            </div>
+            <div class="nav-item" data-step="3">
+              <div class="nav-icon">
+                <i class="fas fa-palette"></i>
+              </div>
+              <div class="nav-content">
+                <span class="nav-title">Styles</span>
+              </div>
+            </div>
+            <div class="nav-item" data-step="4">
+              <div class="nav-icon">
+                <i class="fas fa-plug"></i>
+              </div>
+              <div class="nav-content">
+                <span class="nav-title">Plugin Settings</span>
+              </div>
+            </div>
+            <div class="nav-item" data-step="5">
+              <div class="nav-icon">
+                <i class="fas fa-list-check"></i>
+              </div>
+              <div class="nav-content">
+                <span class="nav-title">Summary</span>
+              </div>
+            </div>
+          </nav>
+
+          <!-- User Profile Section -->
+          <div class="user-profile">
+            <div class="profile-item">
+              <i class="fas fa-user"></i>
+              <span>Profile</span>
+            </div>
+            <div class="profile-item">
+              <i class="fas fa-globe"></i>
+              <span>My Sites</span>
+            </div>
+            <div class="profile-item">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step Content -->
+        <div class="wizard-main">
+          <!-- Step 1: Store Info -->
+          <div class="step-content active" data-step="1">
+            <div class="step-header">
+              <h2 class="h3-headline">
+                Let's Build Your Fresh Magento Website
+              </h2>
+              <p class="p-text">
+                Corefinity Magento Wizard is a no-code solution for building and
+                deploying a fully functional Magento store. Simply input some
+                basic information throughout the guided steps to configure your
+                store. Including our approved third-parties ensuring your site
+                is tailored to you and your Magento Store.
+              </p>
+            </div>
+
+            <div class="form-container">
+              <div class="form-section">
+                <label class="form-label">Store Name</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="storeName"
+                  placeholder="Sample Store"
+                  value="Sample Store"
+                />
+                <div class="form-helper">
+                  <i class="fas fa-check color-spring-green"></i>
+                  <span class="color-spring-green">Store name Available</span>
+                </div>
+              </div>
+
+              <div class="licensing-notice">
+                <div class="notice-icon">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="notice-content">
+                  <h4>Licensing</h4>
+                  <p>
+                    Depending on your modules and theme, you may need to add
+                    your license keys to demo and/or download your
+                    development-ready package.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: System/Platform -->
+          <div class="step-content" data-step="2">
+            <div class="step-header">
+              <h2 class="h3-headline">Environment Setup</h2>
+              <p class="p-text">Select Your Platform</p>
+            </div>
+
+            <div class="platform-grid">
+              <div class="platform-card" data-platform="magento">
+                <div class="platform-icon">
+                  <i class="fab fa-magento"></i>
+                </div>
+                <h3 class="platform-name">Magento</h3>
+                <p class="platform-description">
+                  Powerful e-commerce platform for online stores.
+                </p>
+              </div>
+              <div class="platform-card" data-platform="laravel">
+                <div class="platform-icon">
+                  <i class="fab fa-laravel"></i>
+                </div>
+                <h3 class="platform-name">Laravel</h3>
+                <p class="platform-description">
+                  Modern PHP framework for web applications.
+                </p>
+              </div>
+              <div class="platform-card" data-platform="wordpress">
+                <div class="platform-icon">
+                  <i class="fab fa-wordpress"></i>
+                </div>
+                <h3 class="platform-name">WordPress</h3>
+                <p class="platform-description">
+                  Popular CMS for websites and blogs.
+                </p>
+              </div>
+            </div>
+
+            <!-- Version Selection -->
+            <div
+              class="version-section"
+              id="versionSection"
+              style="display: none"
+            >
+              <div class="version-header">
+                <h3 class="section-title">Choose Version</h3>
+                <p class="section-description">
+                  Select the version for your platform.
+                </p>
+              </div>
+
+              <div class="version-selector">
+                <label class="form-label">Platform Version</label>
+                <select class="form-select" id="versionSelect">
+                  <option value="">Choose version...</option>
+                </select>
+              </div>
+
+              <!-- Dependencies -->
+              <div
+                class="dependencies-section"
+                id="dependenciesSection"
+                style="display: none"
+              >
+                <h4 class="dependencies-title">Required Dependencies</h4>
+                <div class="dependencies-grid" id="dependenciesList"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Styles/Theme -->
+          <div class="step-content" data-step="3">
+            <div class="step-header">
+              <h2 class="h3-headline">Choose Your Frontend Framework</h2>
+              <p class="p-text">Select Your Theme</p>
+            </div>
+
+            <div class="theme-tabs">
+              <div class="tab-nav">
+                <button class="tab-btn active" data-tab="theme">
+                  <i class="fas fa-paint-brush"></i>
+                  Theme
+                </button>
+                <button class="tab-btn" data-tab="logo">
+                  <i class="fas fa-image"></i>
+                  Logo
+                </button>
+                <button class="tab-btn" data-tab="colors">
+                  <i class="fas fa-palette"></i>
+                  Colors
+                </button>
+                <button class="tab-btn" data-tab="font">
+                  <i class="fas fa-font"></i>
+                  Font
+                </button>
+              </div>
+
+              <div class="tab-content">
+                <!-- Theme Tab -->
+                <div class="tab-panel active" data-tab="theme">
+                  <div class="theme-options">
+                    <!-- Added theme-card-wrapper for clickable area -->
+                    <div class="theme-card-wrapper">
+                      <div class="theme-card" data-theme="luma">
+                        <div class="theme-icon">
+                          <img
+                            src="https://placehold.co/60x40/ff6b35/ffffff?text=LUMA"
+                            alt="Luma"
+                          />
+                        </div>
+                        <div class="theme-info">
+                          <h4>Luma</h4>
+                          <p>
+                            Magento's default frontend theme, offering a
+                            traditional setup with built-in compatibility for
+                            most extensions. It's a familiar choice but can be
+                            slower and more resource-intensive.
+                          </p>
+                          <input
+                            type="radio"
+                            name="theme"
+                            value="luma"
+                            id="luma"
+                            checked
+                          />
+                          <label for="luma"></label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="theme-card-wrapper">
+                      <div class="theme-card" data-theme="hyva">
+                        <div class="theme-icon">
+                          <img
+                            src="https://placehold.co/60x40/4a90e2/ffffff?text=HYVA"
+                            alt="Hyva"
+                          />
+                        </div>
+                        <div class="theme-info">
+                          <h4>
+                            Hyva Theme
+                            <span class="license-required"
+                              >License Key Needed</span
+                            >
+                          </h4>
+                          <p>
+                            A modern, lightweight alternative designed for speed
+                            and performance. Hyva significantly improves site
+                            load times and user experience while reducing
+                            complexity.
+                          </p>
+                          <input
+                            type="radio"
+                            name="theme"
+                            value="hyva"
+                            id="hyva"
+                          />
+                          <label for="hyva"></label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="button button-secondary preview-btn">
+                    <i class="fas fa-eye"></i>
+                    Preview Theme
+                  </button>
+
+                  <!-- Theme Preview -->
+                  <div class="theme-preview">
+                    <div class="preview-header">
+                      <div class="preview-nav">
+                        <span>Default welcome msg!</span>
+                        <span>Find a store</span>
+                        <span>Sign In or Create an Account</span>
+                      </div>
+                    </div>
+                    <div class="preview-content">
+                      <div class="preview-logo">
+                        <img
+                          src="https://placehold.co/80x40/333333/ffffff?text=LUMA"
+                          alt="Luma Logo"
+                        />
+                      </div>
+                      <div class="preview-nav-main">
+                        <span>What's New</span>
+                        <span>Women</span>
+                        <span>Men</span>
+                        <span>Gear</span>
+                        <span>Training</span>
+                        <span>Sale</span>
+                        <span>Find a store</span>
+                      </div>
+                      <div class="preview-hero">
+                        <img
+                          src="https://placehold.co/800x400/4a90e2/ffffff?text=Hero+Image"
+                          alt="Hero"
+                        />
+                      </div>
+                    </div>
+                    <div class="preview-mobile">
+                      <img
+                        src="https://placehold.co/300x500/4a90e2/ffffff?text=Mobile+Preview"
+                        alt="Mobile Preview"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Logo Tab -->
+                <div class="tab-panel" data-tab="logo">
+                  <div class="logo-upload">
+                    <div class="upload-area">
+                      <i class="fas fa-cloud-upload-alt"></i>
+                      <p>Click to upload your logo or drag and drop</p>
+                      <small>Supports PNG, JPG, SVG (Max 2MB)</small>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id="logoUpload"
+                        hidden
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Colors Tab -->
+                <div class="tab-panel" data-tab="colors">
+                  <div class="color-grid">
+                    <div class="color-item">
+                      <label>Primary Color</label>
+                      <div class="color-input">
+                        <input type="color" value="#4e54c8" id="primaryColor" />
+                        <input type="text" value="#4e54c8" class="color-hex" />
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <label>Secondary Color</label>
+                      <div class="color-input">
+                        <input
+                          type="color"
+                          value="#8f94fb"
+                          id="secondaryColor"
+                        />
+                        <input type="text" value="#8f94fb" class="color-hex" />
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <label>Tertiary Color</label>
+                      <div class="color-input">
+                        <input
+                          type="color"
+                          value="#19b78a"
+                          id="tertiaryColor"
+                        />
+                        <input type="text" value="#19b78a" class="color-hex" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Font Tab -->
+                <div class="tab-panel" data-tab="font">
+                  <div class="font-settings">
+                    <p>Using Default Theme Font</p>
+                    <div class="font-options">
+                      <select id="fontSelect">
+                        <option value="default">Default Theme Font</option>
+                        <option value="montserrat">Montserrat</option>
+                        <option value="opensans">Open Sans</option>
+                        <option value="roboto">Roboto</option>
+                        <option value="lato">Lato</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Plugin Settings -->
+          <div class="step-content" data-step="4">
+            <div class="step-header">
+              <h2 class="h3-headline">Plugins</h2>
+              <p class="p-text">Select the plugins you want to enable</p>
+            </div>
+
+            <div class="plugins-container">
+              <!-- Payments Section -->
+              <div class="plugin-section">
+                <h3 class="section-title">Payments</h3>
+                <p class="section-description">
+                  Magento payment service provider extensions enable secure
+                  payment processing, offering multiple payment methods, fraud
+                  prevention, and integration with various payment gateways.
+                </p>
+
+                <div class="plugin-list">
+                  <div class="plugin-item selected">
+                    <div class="plugin-icon">
+                      <img
+                        src="https://placehold.co/40x24/003087/ffffff?text=PP"
+                        alt="PayPal"
+                      />
+                    </div>
+                    <div class="plugin-info">
+                      <h4>PPCP</h4>
+                      <p>
+                        PayPal Complete Payments (PPCP) - A full-stack payment
+                        solution offering seamless checkout, fraud protection,
+                        and global payment method support.
+                      </p>
+                    </div>
+                    <button class="plugin-action remove">Cancel</button>
+                  </div>
+
+                  <div class="plugin-item">
+                    <div class="plugin-icon">
+                      <div class="icon-letter">F</div>
+                    </div>
+                    <div class="plugin-info">
+                      <h4>Fastlane</h4>
+                      <p>
+                        PayPal Fastlane - A one-click checkout solution that
+                        streamlines transactions and improves conversion rates
+                        for merchants.
+                      </p>
+                    </div>
+                    <button class="plugin-action add">Add</button>
+                  </div>
+
+                  <div class="plugin-item">
+                    <div class="plugin-icon">
+                      <div class="icon-letter">M</div>
+                    </div>
+                    <div class="plugin-info">
+                      <h4>Mollie</h4>
+                      <p>
+                        Mollie enables businesses to accept multiple payment
+                        options with transparent pricing and a user-friendly
+                        API.
+                      </p>
+                    </div>
+                    <button class="plugin-action add">Add</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Address Finder Section -->
+              <div class="plugin-section">
+                <h3 class="section-title">Address Finder</h3>
+                <p class="section-description">
+                  An address finder helps users quickly auto-complete their
+                  address during checkout, reducing errors and speeding up the
+                  process with suggested address options.
+                </p>
+
+                <div class="plugin-list">
+                  <div class="plugin-item">
+                    <div class="plugin-icon">
+                      <div class="icon-letter">M</div>
+                    </div>
+                    <div class="plugin-info">
+                      <h4>Loqate</h4>
+                      <p>
+                        Loqate - A global address verification and geolocation
+                        service that ensures accurate customer data for smooth
+                        checkouts and deliveries.
+                      </p>
+                    </div>
+                    <button class="plugin-action add">Add</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email & SMS Section -->
+              <div class="plugin-section">
+                <h3 class="section-title">Email & SMS</h3>
+                <p class="section-description">
+                  SMS and email Magento extensions offer automated
+                  notifications, order updates, and marketing campaigns to
+                  engage customers and improve communication.
+                </p>
+
+                <div class="plugin-list">
+                  <div class="plugin-item">
+                    <div class="plugin-icon">
+                      <div class="icon-letter">M</div>
+                    </div>
+                    <div class="plugin-info">
+                      <h4>Klaviyo</h4>
+                      <p>
+                        Klaviyo Email - A data-driven email marketing platform
+                        that enables ecommerce brands to create personalised,
+                        automated customer engagement campaigns.
+                      </p>
+                    </div>
+                    <button class="plugin-action add">Add</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5: Summary -->
+          <div class="step-content" data-step="5">
+            <div class="step-header">
+              <h2 class="h3-headline">Summary</h2>
+              <p class="p-text">
+                Review your configuration before installation.
+              </p>
+            </div>
+
+            <div class="summary-container">
+              <!-- Store Information -->
+              <div class="summary-section">
+                <h3 class="summary-title">Store Information</h3>
+                <div class="summary-content">
+                  <p>
+                    <strong>Store Name:</strong>
+                    <span id="summaryStoreName">Sample Store</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- System Options -->
+              <div class="summary-section">
+                <h3 class="summary-title">System Options</h3>
+                <div class="summary-content">
+                  <p>
+                    <strong>Platform:</strong>
+                    <span id="summaryPlatform"></span>
+                  </p>
+                  <p>
+                    <strong>Version:</strong>
+                    <span id="summaryVersion"></span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Styles -->
+              <div class="summary-section">
+                <h3 class="summary-title">Styles</h3>
+                <div class="summary-content">
+                  <p>
+                    <strong>Selected Theme:</strong>
+                    <span id="summaryTheme">Luma</span>
+                  </p>
+                  <div class="summary-logos">
+                    <p><strong>Logos Uploaded:</strong></p>
+                    <ul>
+                      <li>Desktop Logo: No desktop logo uploaded</li>
+                      <li>Mobile Logo: No mobile logo uploaded</li>
+                    </ul>
+                  </div>
+                  <div class="summary-colors">
+                    <p><strong>Brand Colors:</strong></p>
+                    <div class="color-swatches">
+                      <div class="color-swatch">
+                        <div
+                          class="swatch"
+                          style="background-color: #4e54c8"
+                        ></div>
+                        <span>#4e54c8</span>
+                      </div>
+                      <div class="color-swatch">
+                        <div
+                          class="swatch"
+                          style="background-color: #8f94fb"
+                        ></div>
+                        <span>#8f94fb</span>
+                      </div>
+                      <div class="color-swatch">
+                        <div
+                          class="swatch"
+                          style="background-color: #19b78a"
+                        ></div>
+                        <span>#19b78a</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p><strong>Font:</strong> Using Default Theme Font</p>
+                </div>
+              </div>
+
+              <!-- Plugins Summary -->
+              <div class="summary-section">
+                <h3 class="summary-title">Selected Plugins</h3>
+                <div class="summary-content">
+                  <ul id="summaryPluginsList">
+                    <!-- Plugins will be dynamically added here by JavaScript -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Installation Progress Overlay -->
+    <div class="installation-overlay" id="installationOverlay">
+      <div class="installation-content">
+        <div class="installation-header">
+          <h2 class="h3-headline">Installation Progress</h2>
+          <p class="p-text">
+            Your website is being created with the selected configuration.
+            Please wait while we set up everything for you.
+          </p>
+        </div>
+        <div class="installation-steps" id="installationSteps">
+          <div class="installation-step" data-step-id="1">
+            <div class="step-icon">
+              <i class="fas fa-download"></i>
+            </div>
+            <div class="step-info">
+              <h4 class="step-title">Downloading Platform</h4>
+              <p class="step-description">
+                Downloading and extracting files...
+              </p>
+            </div>
+            <div class="step-status">
+              <i class="fas fa-spinner fa-spin"></i>
+            </div>
+          </div>
+          <div class="installation-step" data-step-id="2">
+            <div class="step-icon">
+              <i class="fas fa-database"></i>
+            </div>
+            <div class="step-info">
+              <h4 class="step-title">Setting up Database</h4>
+              <p class="step-description">Creating database structure...</p>
+            </div>
+            <div class="step-status">
+              <i class="fas fa-spinner fa-spin"></i>
+            </div>
+          </div>
+          <div class="installation-step" data-step-id="3">
+            <div class="step-icon">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <div class="step-info">
+              <h4 class="step-title">Configuring Platform</h4>
+              <p class="step-description">Applying configuration settings...</p>
+            </div>
+            <div class="step-status">
+              <i class="fas fa-spinner fa-spin"></i>
+            </div>
+          </div>
+          <div class="installation-step" data-step-id="4">
+            <div class="step-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="step-info">
+              <h4 class="step-title">Installation Complete</h4>
+              <p class="step-description">Your Magento website is ready!</p>
+            </div>
+            <div class="step-status">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+        </div>
+        <button
+          class="button button-secondary back-to-wizard-btn"
+          style="display: none"
+        >
+          <i class="fas fa-arrow-left"></i> Back to Wizard
+        </button>
+      </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>
