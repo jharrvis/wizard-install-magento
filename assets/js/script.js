@@ -1,42 +1,11 @@
 // Corefinity Magento Wizard JavaScript
 
-// Platform data - Consolidated
-const platformData = {
-  magento: {
-    versions: {
-      "2.4.7": {
-        php: "8.3",
-        mariadb: "10.6",
-        redis: "7.2",
-        opensearch: "2.11",
-      },
-      "2.4.6": { php: "8.2", mariadb: "10.5", redis: "7.0", opensearch: "2.9" },
-      "2.4.5": { php: "8.1", mariadb: "10.4", redis: "6.2", opensearch: "2.6" },
-      "2.4.4": { php: "8.0", mariadb: "10.4", redis: "6.0", opensearch: "2.4" },
-      "2.3.7": { php: "7.4", mariadb: "10.3", redis: "5.0", opensearch: "N/A" },
-    },
-  },
-  laravel: {
-    versions: {
-      11: { php: "8.2", mariadb: "10.6", redis: "7.2", opensearch: "N/A" },
-      10: { php: "8.1", mariadb: "10.4", redis: "6.2", opensearch: "N/A" },
-      9: { php: "8.0", mariadb: "10.3", redis: "6.0", opensearch: "N/A" },
-      8: { php: "7.4", mariadb: "10.3", redis: "5.0", opensearch: "N/A" },
-      7: { php: "7.3", mariadb: "10.2", redis: "5.0", opensearch: "N/A" },
-    },
-  },
-  wordpress: {
-    versions: {
-      6.5: { php: "8.1", mariadb: "10.4", redis: "7.0", opensearch: "N/A" },
-      6.4: { php: "8.0", mariadb: "10.3", redis: "6.0", opensearch: "N/A" },
-      6.3: { php: "7.4", mariadb: "10.2", redis: "5.0", opensearch: "N/A" },
-      6.2: { php: "7.3", mariadb: "10.1", redis: "5.0", opensearch: "N/A" },
-      5.9: { php: "7.2", mariadb: "10.0", redis: "4.0", opensearch: "N/A" },
-    },
-  },
-};
+// Global data variables - loaded from JSON files
+let platformData = {};
+let pluginsData = {};
+let sampleData = {};
 
-// Dependency icons mapping - Consolidated
+// Dependency icons mapping
 const dependencyIcons = {
   php: "fab fa-php",
   mariadb: "fas fa-database",
@@ -44,16 +13,16 @@ const dependencyIcons = {
   opensearch: "fas fa-search",
 };
 
-// Global variables - Consolidated and initialized with default empty values for platform/version
+// Global variables - Updated for 6 steps
 let currentStep = 1;
-const totalSteps = 5; // Wizard has 5 main steps, installation is an overlay
+const totalSteps = 6; // Updated to 6 steps including Sample Data
 let wizardData = {
   storeInfo: {
     storeName: "Sample Store",
   },
   system: {
-    platform: "", // Initialized as empty
-    version: "", // Initialized as empty
+    platform: "",
+    version: "",
   },
   styles: {
     theme: "luma",
@@ -63,25 +32,156 @@ let wizardData = {
       tertiary: "#19b78a",
     },
     font: "default",
-    logoUploaded: false,
+    logos: {
+      desktop: {
+        uploaded: false,
+        filename: "",
+      },
+      mobile: {
+        uploaded: false,
+        filename: "",
+      },
+    },
   },
   plugins: {
-    payments: ["ppcp"],
+    payments: [],
     addressFinder: [],
     emailSms: [],
+    taxShipping: [],
+    reviewsUgc: [],
+    searchMerchandising: [],
+  },
+  sampleData: {
+    useSampleData: true,
   },
 };
+
+/**
+ * Loads JSON data files
+ */
+async function loadDataFiles() {
+  try {
+    // Load platform data
+    const platformResponse = await fetch("assets/data/platform-data.json");
+    platformData = await platformResponse.json();
+
+    // Load plugins data
+    const pluginsResponse = await fetch("assets/data/plugins-data.json");
+    pluginsData = await pluginsResponse.json();
+
+    // Load sample data
+    const sampleDataResponse = await fetch("assets/data/sample-data.json");
+    sampleData = await sampleDataResponse.json();
+  } catch (error) {
+    console.error("Error loading data files:", error);
+    showNotification(
+      "Error loading configuration data. Please refresh the page.",
+      "error"
+    );
+  }
+}
 
 /**
  * Initializes the wizard by updating the display, navigation, and progress.
  * Loads any previously saved data from local storage.
  */
-function initializeWizard() {
-  loadWizardData(); // Load data first to populate wizardData
+async function initializeWizard() {
+  await loadDataFiles(); // Load JSON data first
+  loadWizardData(); // Load saved data
   updateStepDisplay();
   updateNavigation();
   updateProgress();
-  updateSummary(); // Ensure summary is updated on initial load
+  updateSummary();
+
+  // Load plugins into the UI
+  loadPluginsIntoUI();
+
+  // Load sample data into the UI
+  loadSampleDataIntoUI();
+
+  // Initialize Dropify for logo uploads
+  initializeDropify();
+}
+
+/**
+ * Loads plugins from JSON data into the UI
+ */
+function loadPluginsIntoUI() {
+  const pluginsContainer = $(".plugins-container");
+  pluginsContainer.empty();
+
+  Object.keys(pluginsData).forEach((categoryKey) => {
+    const category = pluginsData[categoryKey];
+
+    const sectionHtml = `
+      <div class="plugin-section" data-category="${categoryKey}">
+        <h3 class="section-title">${category.title}</h3>
+        <p class="section-description">${category.description}</p>
+        <div class="plugin-list">
+          ${category.plugins
+            .map((plugin) => {
+              const iconHtml = plugin.icon.startsWith("letter:")
+                ? `<div class="icon-letter">${plugin.icon.replace(
+                    "letter:",
+                    ""
+                  )}</div>`
+                : `<img src="${plugin.icon}" alt="${plugin.name}" />`;
+
+              const isSelected = plugin.selected ? "selected" : "";
+              const buttonText = plugin.selected ? "Cancel" : "Add";
+              const buttonClass = plugin.selected ? "remove" : "add";
+
+              return `
+              <div class="plugin-item ${isSelected}" data-plugin-id="${plugin.id}">
+                <div class="plugin-icon">
+                  ${iconHtml}
+                </div>
+                <div class="plugin-info">
+                  <h4>${plugin.name}</h4>
+                  <p>${plugin.description}</p>
+                </div>
+                <button class="plugin-action ${buttonClass}">${buttonText}</button>
+              </div>
+            `;
+            })
+            .join("")}
+        </div>
+      </div>
+    `;
+
+    pluginsContainer.append(sectionHtml);
+  });
+}
+
+/**
+ * Loads sample data options into the UI
+ */
+function loadSampleDataIntoUI() {
+  const sampleDataContainer = $("#sampleDataOptions");
+  if (sampleDataContainer.length && sampleData.sampleData) {
+    const optionsHtml = sampleData.sampleData.options
+      .map((option) => {
+        const checked = option.selected ? "checked" : "";
+        return `
+        <div class="sample-data-option">
+          <input type="radio" name="sampleData" value="${option.value}" id="${
+          option.id
+        }" ${checked} />
+          <label for="${option.id}" class="sample-data-label">
+            <div class="sample-data-content">
+              <i class="fas ${
+                option.value ? "fa-check-circle" : "fa-times-circle"
+              }"></i>
+              <span>${option.label}</span>
+            </div>
+          </label>
+        </div>
+      `;
+      })
+      .join("");
+
+    sampleDataContainer.html(optionsHtml);
+  }
 }
 
 /**
@@ -95,24 +195,22 @@ function bindEvents() {
   // Sidebar navigation
   $(".nav-item").click(function () {
     const step = parseInt($(this).data("step"));
-    // Allow navigation to previous steps or completed steps
     if (step <= currentStep || $(this).hasClass("completed")) {
       goToStep(step);
     }
   });
 
   // Platform selection
-  $(".platform-card").click(function () {
+  $(document).on("click", ".platform-card", function () {
     $(".platform-card").removeClass("selected");
     $(this).addClass("selected");
     const platform = $(this).data("platform");
     wizardData.system.platform = platform;
-    wizardData.system.version = ""; // Reset version when platform changes
+    wizardData.system.version = "";
     saveWizardData();
 
-    // Show version selection for the chosen platform
     showVersionSelection(platform);
-    $("#dependenciesSection").hide(); // Hide dependencies until a version is chosen
+    $("#dependenciesSection").hide();
   });
 
   // Version selection
@@ -126,7 +224,7 @@ function bindEvents() {
     } else {
       $("#dependenciesSection").hide();
     }
-    updateSummary(); // Update summary when version changes
+    updateSummary();
   });
 
   // Theme tabs
@@ -135,29 +233,24 @@ function bindEvents() {
     switchTab(tab);
   });
 
-  // Theme card selection (clicking the div selects the radio button)
+  // Theme card selection
   $(".theme-card-wrapper").click(function () {
-    // Remove 'selected' class from all theme card wrappers
     $(".theme-card-wrapper").removeClass("selected");
-    // Add 'selected' class to the clicked theme card wrapper
     $(this).addClass("selected");
 
-    // Find the radio button inside this wrapper and check it
     const radioButton = $(this).find('input[type="radio"]');
     radioButton.prop("checked", true);
-
-    // Trigger the change event on the radio button to update wizardData and summary
     radioButton.trigger("change");
   });
 
-  // Theme selection (radio buttons - still needed for direct radio button clicks or programmatically)
+  // Theme selection (radio buttons)
   $('input[name="theme"]').change(function () {
     wizardData.styles.theme = $(this).val();
     saveWizardData();
     updateSummary();
   });
 
-  // Color inputs (both color picker and hex input)
+  // Color inputs
   $('input[type="color"], .color-hex').change(function () {
     const isColorPicker = $(this).is('input[type="color"]');
     let colorValue = $(this).val();
@@ -165,15 +258,13 @@ function bindEvents() {
 
     if (isColorPicker) {
       colorType = $(this).attr("id").replace("Color", "");
-      $(this).siblings(".color-hex").val(colorValue); // Update hex input
+      $(this).siblings(".color-hex").val(colorValue);
     } else {
-      // It's a hex input
       if (!isValidHexColor(colorValue)) {
         showNotification(
           "Invalid hex color format. Please use #RRGGBB.",
           "error"
         );
-        // Revert to previous valid color or clear input if invalid
         colorValue =
           wizardData.styles.colors[
             $(this)
@@ -189,7 +280,7 @@ function bindEvents() {
         .siblings('input[type="color"]')
         .attr("id")
         .replace("Color", "");
-      $(this).siblings('input[type="color"]').val(colorValue); // Update color picker
+      $(this).siblings('input[type="color"]').val(colorValue);
     }
 
     wizardData.styles.colors[colorType] = colorValue;
@@ -204,18 +295,15 @@ function bindEvents() {
     updateSummary();
   });
 
-  // Logo upload
-  $("#logoUpload").change(function () {
-    handleLogoUpload(this);
+  // Sample data selection
+  $(document).on("change", 'input[name="sampleData"]', function () {
+    wizardData.sampleData.useSampleData = $(this).val() === "true";
+    saveWizardData();
+    updateSummary();
   });
 
-  // Upload area click to trigger file input
-  $(".upload-area").click(function () {
-    $("#logoUpload").click();
-  });
-
-  // Plugin actions (add/remove)
-  $(".plugin-action").click(function () {
+  // Plugin actions (delegated event binding for dynamically loaded content)
+  $(document).on("click", ".plugin-action", function () {
     const pluginItem = $(this).closest(".plugin-item");
     const isSelected = pluginItem.hasClass("selected");
 
@@ -226,9 +314,9 @@ function bindEvents() {
       pluginItem.removeClass("selected");
       $(this).removeClass("remove").addClass("add").text("Add");
     }
-    updatePluginData(); // Update wizardData.plugins based on selections
-    saveWizardData(); // Save changes
-    updateSummary(); // Update summary
+    updatePluginData();
+    saveWizardData();
+    updateSummary();
   });
 
   // Store name input
@@ -238,22 +326,20 @@ function bindEvents() {
     updateSummary();
   });
 
-  // Back to Wizard button on installation overlay
+  // Back to Wizard button
   $(".back-to-wizard-btn").click(function () {
     $("#installationOverlay").removeClass("active");
-    // Optionally, reset installation progress here if needed
   });
 }
 
 /**
  * Displays the version selection dropdown for the given platform.
- * @param {string} platform - The selected platform (e.g., 'magento', 'laravel').
  */
 function showVersionSelection(platform) {
   const versionSection = $("#versionSection");
   const versionSelect = $("#versionSelect");
 
-  versionSelect.empty(); // Clear previous options
+  versionSelect.empty();
   versionSelect.append('<option value="">Choose version...</option>');
 
   if (platformData[platform] && platformData[platform].versions) {
@@ -267,31 +353,29 @@ function showVersionSelection(platform) {
 
 /**
  * Displays the dependencies for the selected platform and version.
- * @param {string} platform - The selected platform.
- * @param {string} version - The selected version.
  */
 function showDependencies(platform, version) {
   const dependenciesSection = $("#dependenciesSection");
   const dependenciesList = $("#dependenciesList");
 
-  dependenciesList.empty(); // Clear previous dependencies
+  dependenciesList.empty();
 
   const dependencies = platformData[platform]?.versions[version];
   if (dependencies) {
     Object.entries(dependencies).forEach(([dep, ver]) => {
       if (ver !== "N/A") {
-        const iconClass = dependencyIcons[dep] || "fas fa-cog"; // Default icon
+        const iconClass = dependencyIcons[dep] || "fas fa-cog";
         const dependencyHtml = `
-                    <div class="dependency-item">
-                        <div class="dependency-icon ${dep}">
-                            <i class="${iconClass}"></i>
-                        </div>
-                        <div class="dependency-details">
-                            <div class="dependency-name">${dep.toUpperCase()}</div>
-                            <div class="dependency-version">v${ver}</div>
-                        </div>
-                    </div>
-                `;
+          <div class="dependency-item">
+            <div class="dependency-icon ${dep}">
+              <i class="${iconClass}"></i>
+            </div>
+            <div class="dependency-details">
+              <div class="dependency-name">${dep.toUpperCase()}</div>
+              <div class="dependency-version">v${ver}</div>
+            </div>
+          </div>
+        `;
         dependenciesList.append(dependencyHtml);
       }
     });
@@ -307,7 +391,6 @@ function showDependencies(platform, version) {
 function nextStep() {
   if (validateCurrentStep()) {
     if (currentStep < totalSteps) {
-      // Mark current step as completed
       $(`.nav-item[data-step="${currentStep}"]`)
         .addClass("completed")
         .removeClass("active");
@@ -317,15 +400,12 @@ function nextStep() {
       updateNavigation();
       updateProgress();
 
-      // Activate next step
       $(`.nav-item[data-step="${currentStep}"]`).addClass("active");
 
-      // Update summary if on last step
       if (currentStep === totalSteps) {
         updateSummary();
       }
     } else if (currentStep === totalSteps) {
-      // If on the last step (Summary), trigger installation
       startInstallationSimulation();
     }
   } else {
@@ -338,7 +418,6 @@ function nextStep() {
  */
 function prevStep() {
   if (currentStep > 1) {
-    // Deactivate current step
     $(`.nav-item[data-step="${currentStep}"]`).removeClass("active");
 
     currentStep--;
@@ -346,7 +425,6 @@ function prevStep() {
     updateNavigation();
     updateProgress();
 
-    // Activate previous step and remove completed status
     $(`.nav-item[data-step="${currentStep}"]`)
       .addClass("active")
       .removeClass("completed");
@@ -355,11 +433,9 @@ function prevStep() {
 
 /**
  * Navigates the wizard directly to a specified step.
- * @param {number} step - The step number to navigate to.
  */
 function goToStep(step) {
   if (step >= 1 && step <= totalSteps) {
-    // Update nav items: remove active from all, mark previous as completed, activate current
     $(".nav-item").removeClass("active completed");
     for (let i = 1; i < step; i++) {
       $(`.nav-item[data-step="${i}"]`).addClass("completed");
@@ -386,7 +462,7 @@ function updateStepDisplay() {
 }
 
 /**
- * Updates the state of navigation buttons (back/next) and step counter.
+ * Updates the state of navigation buttons and step counter.
  */
 function updateNavigation() {
   $("#backBtn").prop("disabled", currentStep === 1);
@@ -409,7 +485,6 @@ function updateProgress() {
 
 /**
  * Switches the active tab in the styles section.
- * @param {string} tab - The data-tab attribute value of the tab to activate.
  */
 function switchTab(tab) {
   $(".tab-btn").removeClass("active");
@@ -420,94 +495,127 @@ function switchTab(tab) {
 }
 
 /**
- * Handles the logo file upload, including validation and updating wizard data.
- * @param {HTMLInputElement} input - The file input element.
+ * Initializes Dropify for logo upload fields
  */
-function handleLogoUpload(input) {
+function initializeDropify() {
+  // Initialize dropify
+  $(".dropify").dropify({
+    messages: {
+      default: "Drag and drop a file here or click",
+      replace: "Drag and drop or click to replace",
+      remove: "Remove",
+      error: "Ooops, something wrong happened.",
+    },
+  });
+
+  // Handle desktop logo upload
+  $("#desktopLogoUpload").on("change", function () {
+    handleLogoUpload(this, "desktop");
+  });
+
+  // Handle mobile logo upload
+  $("#mobileLogoUpload").on("change", function () {
+    handleLogoUpload(this, "mobile");
+  });
+}
+
+/**
+ * Handles logo file upload for both desktop and mobile
+ */
+function handleLogoUpload(input, type) {
   const file = input.files[0];
   if (file) {
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      showNotification("File size must be less than 2MB.", "error");
-      input.value = ""; // Clear the input
+      showNotification(
+        `${type} logo file size must be less than 2MB.`,
+        "error"
+      );
+      $(input).dropify("clear");
       return;
     }
 
     // Validate file type
     if (!file.type.match(/^image\/(png|jpg|jpeg|svg\+xml)$/)) {
       showNotification(
-        "Please upload a valid image file (PNG, JPG, SVG).",
+        `Please upload a valid ${type} logo image file (PNG, JPG, SVG).`,
         "error"
       );
-      input.value = ""; // Clear the input
+      $(input).dropify("clear");
       return;
     }
 
-    // Read file as Data URL (for potential preview, though not implemented here)
+    // Read file for validation and storage
     const reader = new FileReader();
     reader.onload = function (e) {
-      wizardData.styles.logoUploaded = true;
+      wizardData.styles.logos[type].uploaded = true;
+      wizardData.styles.logos[type].filename = file.name;
       saveWizardData();
       updateSummary();
-      showNotification("Logo uploaded successfully!", "success");
+      showNotification(
+        `${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        } logo uploaded successfully!`,
+        "success"
+      );
     };
     reader.readAsDataURL(file);
   } else {
-    wizardData.styles.logoUploaded = false; // If no file selected (e.g., user cancelled)
+    // File was removed
+    wizardData.styles.logos[type].uploaded = false;
+    wizardData.styles.logos[type].filename = "";
     saveWizardData();
     updateSummary();
   }
 }
 
 /**
- * Validates if a given string is a valid hex color code (e.g., #RRGGBB).
- * @param {string} hex - The hex color string to validate.
- * @returns {boolean} True if valid, false otherwise.
+ * Validates if a given string is a valid hex color code.
  */
 function isValidHexColor(hex) {
   return /^#[0-9A-F]{6}$/i.test(hex);
 }
 
 /**
- * Updates the wizardData.plugins object based on the currently selected plugin items in the UI.
+ * Updates the wizardData.plugins object based on selected plugins.
  */
 function updatePluginData() {
-  // Reset plugin data to ensure only currently selected are included
+  // Reset plugin data
   wizardData.plugins = {
     payments: [],
     addressFinder: [],
     emailSms: [],
+    taxShipping: [],
+    reviewsUgc: [],
+    searchMerchandising: [],
+  };
+
+  // Map category keys to wizardData properties
+  const categoryMapping = {
+    payments: "payments",
+    addressFinder: "addressFinder",
+    emailSms: "emailSms",
+    taxShipping: "taxShipping",
+    reviewsUgc: "reviewsUgc",
+    searchMerchandising: "searchMerchandising",
   };
 
   // Iterate through each plugin section
   $(".plugin-section").each(function () {
-    const sectionTitle = $(this).find(".section-title").text().toLowerCase();
-    let category;
+    const categoryKey = $(this).data("category");
+    const wizardCategory = categoryMapping[categoryKey];
 
-    // Determine the category based on the section title
-    if (sectionTitle.includes("payment")) {
-      category = "payments";
-    } else if (sectionTitle.includes("address")) {
-      category = "addressFinder";
-    } else if (sectionTitle.includes("email") || sectionTitle.includes("sms")) {
-      category = "emailSms";
-    } else {
-      // Fallback for any other sections, though current data structure doesn't use 'other'
-      category = "other";
+    if (wizardCategory) {
+      // Add selected plugins to the corresponding category
+      $(this)
+        .find(".plugin-item.selected")
+        .each(function () {
+          const pluginId = $(this).data("plugin-id");
+          wizardData.plugins[wizardCategory].push(pluginId);
+        });
     }
-
-    // Add selected plugins to the corresponding category
-    $(this)
-      .find(".plugin-item.selected")
-      .each(function () {
-        const pluginName = $(this).find("h4").text().toLowerCase();
-        if (wizardData.plugins[category]) {
-          // Ensure category exists
-          wizardData.plugins[category].push(pluginName);
-        }
-      });
   });
-  saveWizardData(); // Save changes after updating plugin data
+  saveWizardData();
 }
 
 /**
@@ -541,43 +649,69 @@ function updateSummary() {
       $(this).find(".swatch").css("background-color", colorValue);
       $(this).find("span").text(colorValue);
     } else {
-      $(this).find(".swatch").css("background-color", "#ffffff"); // Default white if no color
+      $(this).find(".swatch").css("background-color", "#ffffff");
       $(this).find("span").text("N/A");
     }
   });
 
   // Logo status
-  const logoStatus = wizardData.styles.logoUploaded
-    ? "Desktop Logo: Logo uploaded"
+  const desktopLogoStatus = wizardData.styles.logos.desktop.uploaded
+    ? `Desktop Logo: ${wizardData.styles.logos.desktop.filename}`
     : "Desktop Logo: No desktop logo uploaded";
-  $(".summary-logos li:first-child").text(logoStatus);
+
+  const mobileLogoStatus = wizardData.styles.logos.mobile.uploaded
+    ? `Mobile Logo: ${wizardData.styles.logos.mobile.filename}`
+    : "Mobile Logo: No mobile logo uploaded";
+
+  $(".summary-logos li:first-child").text(desktopLogoStatus);
+  $(".summary-logos li:last-child").text(mobileLogoStatus);
+
+  // Sample Data status
+  const sampleDataStatus = wizardData.sampleData.useSampleData
+    ? "Sample data will be installed"
+    : "No sample data will be installed";
+  $("#summarySampleData").text(sampleDataStatus);
 
   // Plugins Summary
   const pluginsSummaryList = $("#summaryPluginsList");
   pluginsSummaryList.empty();
   let hasPlugins = false;
 
+  // Map plugin categories to display names
+  const categoryDisplayNames = {
+    payments: "Payments",
+    addressFinder: "Address Finder",
+    emailSms: "Email & SMS",
+    taxShipping: "Tax & Shipping",
+    reviewsUgc: "Reviews & UGC",
+    searchMerchandising: "Search & Merchandising",
+  };
+
   for (const category in wizardData.plugins) {
     if (wizardData.plugins[category].length > 0) {
       hasPlugins = true;
-      const categoryName = category
-        .replace(/([A-Z])/g, " $1")
-        .replace(/^./, (str) => str.toUpperCase()); // Format category name
+      const categoryName = categoryDisplayNames[category] || category;
+
+      // Get plugin names from pluginsData
+      const pluginNames = wizardData.plugins[category].map((pluginId) => {
+        // Find the plugin name from the loaded data
+        for (const catKey in pluginsData) {
+          const plugin = pluginsData[catKey].plugins.find(
+            (p) => p.id === pluginId
+          );
+          if (plugin) return plugin.name;
+        }
+        return pluginId; // fallback to ID if not found
+      });
+
       const pluginsHtml = `
-                <li>
-                    <strong>${categoryName}:</strong>
-                    <ul>
-                        ${wizardData.plugins[category]
-                          .map(
-                            (p) =>
-                              `<li>${
-                                p.charAt(0).toUpperCase() + p.slice(1)
-                              }</li>`
-                          )
-                          .join("")}
-                    </ul>
-                </li>
-            `;
+        <li>
+          <strong>${categoryName}:</strong>
+          <ul>
+            ${pluginNames.map((name) => `<li>${name}</li>`).join("")}
+          </ul>
+        </li>
+      `;
       pluginsSummaryList.append(pluginsHtml);
     }
   }
@@ -588,7 +722,6 @@ function updateSummary() {
 
 /**
  * Validates the current step's data before proceeding.
- * @returns {boolean} True if the current step is valid, false otherwise.
  */
 function validateCurrentStep() {
   switch (currentStep) {
@@ -599,11 +732,12 @@ function validateCurrentStep() {
         wizardData.system.platform !== "" && wizardData.system.version !== ""
       );
     case 3: // Styles
-      // Theme is always selected by default, but check if it's not empty string
       return wizardData.styles.theme !== "";
     case 4: // Plugins (optional)
       return true;
-    case 5: // Summary (review)
+    case 5: // Sample Data
+      return true;
+    case 6: // Summary (review)
       return true;
     default:
       return true;
@@ -611,7 +745,7 @@ function validateCurrentStep() {
 }
 
 /**
- * Displays a validation error notification based on the current step.
+ * Displays a validation error notification.
  */
 function showValidationError() {
   let message = "";
@@ -627,7 +761,7 @@ function showValidationError() {
       }
       break;
     case 3:
-      message = "Please select a theme."; // Should not happen with default, but good to have.
+      message = "Please select a theme.";
       break;
     default:
       message = "Please complete all required fields for this step.";
@@ -636,20 +770,19 @@ function showValidationError() {
 }
 
 /**
- * Saves the current wizard data to localStorage.
+ * Saves wizard data to localStorage.
  */
 function saveWizardData() {
   localStorage.setItem("wizardData", JSON.stringify(wizardData));
 }
 
 /**
- * Loads wizard data from localStorage and applies it to the UI.
+ * Loads wizard data from localStorage.
  */
 function loadWizardData() {
   const savedData = localStorage.getItem("wizardData");
   if (savedData) {
     const parsed = JSON.parse(savedData);
-    // Merge saved data with default wizardData, ensuring new properties are not lost
     wizardData = {
       ...wizardData,
       ...parsed,
@@ -658,23 +791,36 @@ function loadWizardData() {
       styles: {
         ...wizardData.styles,
         ...parsed.styles,
-        colors: { ...wizardData.styles.colors, ...parsed.styles.colors },
+        colors: { ...wizardData.styles.colors, ...parsed.styles?.colors },
+        logos: {
+          ...wizardData.styles.logos,
+          ...parsed.styles?.logos,
+          desktop: {
+            ...wizardData.styles.logos.desktop,
+            ...parsed.styles?.logos?.desktop,
+          },
+          mobile: {
+            ...wizardData.styles.logos.mobile,
+            ...parsed.styles?.logos?.mobile,
+          },
+        },
       },
       plugins: { ...wizardData.plugins, ...parsed.plugins },
+      sampleData: { ...wizardData.sampleData, ...parsed.sampleData },
     };
 
     // Apply loaded data to form elements
     $("#storeName").val(wizardData.storeInfo.storeName);
 
-    // Apply platform selection and trigger version/dependencies display
+    // Apply platform selection
     if (wizardData.system.platform) {
       $(
         `.platform-card[data-platform="${wizardData.system.platform}"]`
       ).addClass("selected");
-      showVersionSelection(wizardData.system.platform); // Populate versions
+      showVersionSelection(wizardData.system.platform);
       if (wizardData.system.version) {
         $("#versionSelect").val(wizardData.system.version);
-        showDependencies(wizardData.system.platform, wizardData.system.version); // Show dependencies
+        showDependencies(wizardData.system.platform, wizardData.system.version);
       }
     }
 
@@ -683,7 +829,6 @@ function loadWizardData() {
       "checked",
       true
     );
-    // Also apply 'selected' class to the theme card wrapper
     $(`.theme-card[data-theme="${wizardData.styles.theme}"]`)
       .closest(".theme-card-wrapper")
       .addClass("selected");
@@ -697,35 +842,41 @@ function loadWizardData() {
     // Apply font selection
     $("#fontSelect").val(wizardData.styles.font);
 
-    // Apply plugin selections
-    $(".plugin-item").removeClass("selected");
-    $(".plugin-action").removeClass("remove").addClass("add").text("Add");
+    // Apply sample data selection
+    $(
+      `input[name="sampleData"][value="${wizardData.sampleData.useSampleData}"]`
+    ).prop("checked", true);
 
-    for (const category in wizardData.plugins) {
-      wizardData.plugins[category].forEach((pluginName) => {
-        // Find the plugin item by its h4 text content
-        const pluginItem = $(
-          `.plugin-item h4:contains('${
-            pluginName.charAt(0).toUpperCase() + pluginName.slice(1)
-          }')`
-        ).closest(".plugin-item");
-        if (pluginItem.length) {
-          pluginItem.addClass("selected");
-          pluginItem
-            .find(".plugin-action")
-            .removeClass("add")
-            .addClass("remove")
-            .text("Cancel");
-        }
-      });
-    }
-
-    updateSummary(); // Update summary based on loaded data
+    updateSummary();
   }
 }
 
 /**
- * Resets the wizard by clearing localStorage and reloading the page.
+ * Applies saved plugin selections to the UI after plugins are loaded
+ */
+function applySavedPluginSelections() {
+  // Reset all plugin selections first
+  $(".plugin-item").removeClass("selected");
+  $(".plugin-action").removeClass("remove").addClass("add").text("Add");
+
+  // Apply saved selections
+  for (const category in wizardData.plugins) {
+    wizardData.plugins[category].forEach((pluginId) => {
+      const pluginItem = $(`.plugin-item[data-plugin-id="${pluginId}"]`);
+      if (pluginItem.length) {
+        pluginItem.addClass("selected");
+        pluginItem
+          .find(".plugin-action")
+          .removeClass("add")
+          .addClass("remove")
+          .text("Cancel");
+      }
+    });
+  }
+}
+
+/**
+ * Resets the wizard.
  */
 function resetWizard() {
   localStorage.removeItem("wizardData");
@@ -733,12 +884,9 @@ function resetWizard() {
 }
 
 /**
- * Displays a transient notification message on the screen.
- * @param {string} message - The message to display.
- * @param {string} type - The type of notification ('info', 'success', 'error').
+ * Displays a notification message.
  */
 function showNotification(message, type = "info") {
-  // Define colors based on type
   let bgColor;
   let iconClass;
   switch (type) {
@@ -750,73 +898,67 @@ function showNotification(message, type = "info") {
       bgColor = "#22c55e";
       iconClass = "fa-check-circle";
       break;
-    default: // info
+    default:
       bgColor = "#3b82f6";
       iconClass = "fa-info-circle";
       break;
   }
 
-  // Create notification element with inline styles for quick setup
   const notification = $(`
-        <div class="notification ${type}" style="
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            background: ${bgColor};
-            color: white;
-            padding: 1.5rem 2rem;
-            border-radius: 0.8rem;
-            font-weight: 600;
-            z-index: 10000;
-            box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.2);
-            animation: slideInRight 0.3s ease forwards; /* Use forwards to keep final state */
-        ">
-            <i class="fas ${iconClass}" style="margin-right: 1rem;"></i>
-            ${message}
-        </div>
-    `);
+    <div class="notification ${type}" style="
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: ${bgColor};
+      color: white;
+      padding: 1.5rem 2rem;
+      border-radius: 0.8rem;
+      font-weight: 600;
+      z-index: 10000;
+      box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.2);
+      animation: slideInRight 0.3s ease forwards;
+    ">
+      <i class="fas ${iconClass}" style="margin-right: 1rem;"></i>
+      ${message}
+    </div>
+  `);
 
-  // Add styles for animation if not already present
   if (!$("#notification-styles").length) {
     $("head").append(`
-            <style id="notification-styles">
-                @keyframes slideInRight {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes slideOutRight {
-                    from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(100%); opacity: 0; }
-                }
-            </style>
-        `);
+      <style id="notification-styles">
+        @keyframes slideInRight {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      </style>
+    `);
   }
 
-  // Append to body
   $("body").append(notification);
 
-  // Remove after 3 seconds with slide out animation
   setTimeout(() => {
     notification.css("animation", "slideOutRight 0.3s ease forwards");
-    setTimeout(() => notification.remove(), 300); // Remove after animation completes
+    setTimeout(() => notification.remove(), 300);
   }, 3000);
 }
 
 /**
- * Simulates the installation process with a step-by-step progress display.
+ * Simulates the installation process.
  */
 async function startInstallationSimulation() {
   const installationOverlay = $("#installationOverlay");
   const installationStepsContainer = $("#installationSteps");
   const backToWizardBtn = $(".back-to-wizard-btn");
 
-  // Show the installation overlay
   installationOverlay.addClass("active");
-  backToWizardBtn.hide(); // Hide button initially
+  backToWizardBtn.hide();
 
   const steps = installationStepsContainer.find(".installation-step");
 
-  // Reset all steps to initial state
   steps.removeClass("active completed");
   steps.find(".step-status i").removeClass().addClass("fas fa-spinner fa-spin");
 
@@ -824,8 +966,7 @@ async function startInstallationSimulation() {
     const currentInstallationStep = $(steps[i]);
     currentInstallationStep.addClass("active");
 
-    // Simulate delay for each step
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     currentInstallationStep.removeClass("active").addClass("completed");
     currentInstallationStep
@@ -833,56 +974,33 @@ async function startInstallationSimulation() {
       .removeClass()
       .addClass("fas fa-check-circle");
 
-    // If it's the last step, update the icon to a final checkmark
     if (i === steps.length - 1) {
       currentInstallationStep
         .find(".step-icon i")
         .removeClass()
         .addClass("fas fa-check-circle");
       showNotification("Installation Complete!", "success");
-      backToWizardBtn.show(); // Show back button after completion
+      backToWizardBtn.show();
     }
   }
 }
 
-// Animation helpers (kept for consistency with original, though not directly used by showNotification anymore)
-function animateIn(element) {
-  $(element)
-    .css({
-      opacity: 0,
-      transform: "translateY(20px)",
-    })
-    .animate(
-      {
-        opacity: 1,
-        transform: "translateY(0)",
-      },
-      300
-    );
-}
-
-function animateOut(element, callback) {
-  $(element).animate(
-    {
-      opacity: 0,
-      transform: "translateY(-20px)",
-    },
-    300,
-    callback
-  );
-}
-
-// Initialize wizard when the document is ready
+// Initialize wizard when document is ready
 $(document).ready(function () {
-  initializeWizard();
+  initializeWizard().then(() => {
+    // Apply saved plugin selections after plugins are loaded
+    setTimeout(() => {
+      applySavedPluginSelections();
+    }, 100);
+  });
   bindEvents();
 });
 
-// Export functions for global access (only one set)
+// Export functions for global access
 window.nextStep = nextStep;
 window.prevStep = prevStep;
 window.goToStep = goToStep;
 window.switchTab = switchTab;
 window.resetWizard = resetWizard;
-window.showVersionSelection = showVersionSelection; // Potentially useful if called from HTML directly
-window.showDependencies = showDependencies; // Potentially useful if called from HTML directly
+window.showVersionSelection = showVersionSelection;
+window.showDependencies = showDependencies;

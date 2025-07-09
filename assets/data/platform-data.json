@@ -1,0 +1,104 @@
+{
+  "magento": {
+    "versions": {
+      "2.4.7": {
+        "php": "8.3",
+        "mariadb": "10.6",
+        "redis": "7.2",
+        "opensearch": "2.11"
+      },
+      "2.4.6": {
+        "php": "8.2",
+        "mariadb": "10.5",
+        "redis": "7.0",
+        "opensearch": "2.9"
+      },
+      "2.4.5": {
+        "php": "8.1",
+        "mariadb": "10.4",
+        "redis": "6.2",
+        "opensearch": "2.6"
+      },
+      "2.4.4": {
+        "php": "8.0",
+        "mariadb": "10.4",
+        "redis": "6.0",
+        "opensearch": "2.4"
+      },
+      "2.3.7": {
+        "php": "7.4",
+        "mariadb": "10.3",
+        "redis": "5.0",
+        "opensearch": "N/A"
+      }
+    }
+  },
+  "laravel": {
+    "versions": {
+      "11": {
+        "php": "8.2",
+        "mariadb": "10.6",
+        "redis": "7.2",
+        "opensearch": "N/A"
+      },
+      "10": {
+        "php": "8.1",
+        "mariadb": "10.4",
+        "redis": "6.2",
+        "opensearch": "N/A"
+      },
+      "9": {
+        "php": "8.0",
+        "mariadb": "10.3",
+        "redis": "6.0",
+        "opensearch": "N/A"
+      },
+      "8": {
+        "php": "7.4",
+        "mariadb": "10.3",
+        "redis": "5.0",
+        "opensearch": "N/A"
+      },
+      "7": {
+        "php": "7.3",
+        "mariadb": "10.2",
+        "redis": "5.0",
+        "opensearch": "N/A"
+      }
+    }
+  },
+  "wordpress": {
+    "versions": {
+      "6.5": {
+        "php": "8.1",
+        "mariadb": "10.4",
+        "redis": "7.0",
+        "opensearch": "N/A"
+      },
+      "6.4": {
+        "php": "8.0",
+        "mariadb": "10.3",
+        "redis": "6.0",
+        "opensearch": "N/A"
+      },
+      "6.3": {
+        "php": "7.4",
+        "mariadb": "10.2",
+        "redis": "5.0",
+        "opensearch": "N/A"
+      },
+      "6.2": {
+        "php": "7.3",
+        "mariadb": "10.1",
+        "redis": "5.0",
+        "opensearch": "N/A"
+      },
+      "5.9": {
+        "php": "7.2",
+        "mariadb": "10.0",
+        "redis": "4.0",
+        "opensearch": "N/A"
+      }
+    }
+  }
+}

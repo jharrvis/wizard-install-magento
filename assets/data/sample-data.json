@@ -1,0 +1,20 @@
+{
+  "sampleData": {
+    "title": "Sample Data",
+    "description": "Do you want to populate the Database with sample data",
+    "options": [
+      {
+        "id": "with_sample",
+        "label": "Yes I will be using sample data",
+        "value": true,
+        "selected": true
+      },
+      {
+        "id": "without_sample",
+        "label": "No, I want to populate my own data",
+        "value": false,
+        "selected": false
+      }
+    ]
+  }
+}

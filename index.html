@@ -14,6 +14,15 @@
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+    <!-- Dropify CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css"
+    />
+
+    <!-- Dropify JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js"></script>
+
     <!-- Main CSS (Keeping original styles for consistency) -->
     <link rel="stylesheet" href="assets/css/main.css" />
 
@@ -31,7 +40,7 @@
         </div>
         <div class="wizard-progress">
           <span class="progress-text"
-            >Step <span id="currentStep">1</span> of 5</span
+            >Step <span id="currentStep">1</span> of 6</span
           >
           <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
@@ -87,6 +96,14 @@
               </div>
             </div>
             <div class="nav-item" data-step="5">
+              <div class="nav-icon">
+                <i class="fas fa-database"></i>
+              </div>
+              <div class="nav-content">
+                <span class="nav-title">Sample Data</span>
+              </div>
+            </div>
+            <div class="nav-item" data-step="6">
               <div class="nav-icon">
                 <i class="fas fa-list-check"></i>
               </div>
@@ -371,16 +388,62 @@
                 <!-- Logo Tab -->
                 <div class="tab-panel" data-tab="logo">
                   <div class="logo-upload">
-                    <div class="upload-area">
-                      <i class="fas fa-cloud-upload-alt"></i>
-                      <p>Click to upload your logo or drag and drop</p>
-                      <small>Supports PNG, JPG, SVG (Max 2MB)</small>
+                    <h3 class="logo-upload-title">
+                      Upload both formats of your companies logo
+                    </h3>
+
+                    <!-- Desktop Logo Upload -->
+                    <div class="logo-upload-section">
+                      <label class="logo-label">Desktop Logo</label>
                       <input
                         type="file"
                         accept="image/*"
-                        id="logoUpload"
-                        hidden
+                        id="desktopLogoUpload"
+                        class="dropify"
+                        data-default-file=""
+                        data-height="200"
+                        data-max-file-size="2M"
+                        data-allowed-file-extensions="jpg jpeg png svg"
+                        data-messages-default="Choose file"
+                        data-messages-replace="Drag and drop or click to replace"
+                        data-messages-remove="Remove"
+                        data-messages-error="Ooops, something wrong happened."
                       />
+                      <small class="upload-help"
+                        >Minimum size: 600x300px. Allowed formats: jpg, jpeg,
+                        png, svg</small
+                      >
+                    </div>
+
+                    <!-- Mobile Logo Upload -->
+                    <div class="logo-upload-section">
+                      <label class="logo-label">Mobile Logo</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id="mobileLogoUpload"
+                        class="dropify"
+                        data-default-file=""
+                        data-height="200"
+                        data-max-file-size="2M"
+                        data-allowed-file-extensions="jpg jpeg png svg"
+                        data-messages-default="Choose file"
+                        data-messages-replace="Drag and drop or click to replace"
+                        data-messages-remove="Remove"
+                        data-messages-error="Ooops, something wrong happened."
+                      />
+                      <small class="upload-help"
+                        >Minimum size: 100x50px. Allowed formats: jpg, jpeg,
+                        png, svg</small
+                      >
+                    </div>
+
+                    <!-- Preview Theme Button -->
+                    <div class="logo-preview-section">
+                      <button class="button button-secondary preview-theme-btn">
+                        <i class="fas fa-eye"></i>
+                        Preview Theme
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -447,124 +510,30 @@
             </div>
 
             <div class="plugins-container">
-              <!-- Payments Section -->
-              <div class="plugin-section">
-                <h3 class="section-title">Payments</h3>
-                <p class="section-description">
-                  Magento payment service provider extensions enable secure
-                  payment processing, offering multiple payment methods, fraud
-                  prevention, and integration with various payment gateways.
-                </p>
+              <!-- Plugins will be dynamically loaded from JSON -->
+            </div>
+          </div>
 
-                <div class="plugin-list">
-                  <div class="plugin-item selected">
-                    <div class="plugin-icon">
-                      <img
-                        src="https://placehold.co/40x24/003087/ffffff?text=PP"
-                        alt="PayPal"
-                      />
-                    </div>
-                    <div class="plugin-info">
-                      <h4>PPCP</h4>
-                      <p>
-                        PayPal Complete Payments (PPCP) - A full-stack payment
-                        solution offering seamless checkout, fraud protection,
-                        and global payment method support.
-                      </p>
-                    </div>
-                    <button class="plugin-action remove">Cancel</button>
-                  </div>
+          <!-- Step 5: Sample Data -->
+          <div class="step-content" data-step="5">
+            <div class="step-header">
+              <h2 class="h3-headline">Sample Data</h2>
+              <p class="p-text">
+                Do you want to populate the Database with sample data
+              </p>
+            </div>
 
-                  <div class="plugin-item">
-                    <div class="plugin-icon">
-                      <div class="icon-letter">F</div>
-                    </div>
-                    <div class="plugin-info">
-                      <h4>Fastlane</h4>
-                      <p>
-                        PayPal Fastlane - A one-click checkout solution that
-                        streamlines transactions and improves conversion rates
-                        for merchants.
-                      </p>
-                    </div>
-                    <button class="plugin-action add">Add</button>
-                  </div>
-
-                  <div class="plugin-item">
-                    <div class="plugin-icon">
-                      <div class="icon-letter">M</div>
-                    </div>
-                    <div class="plugin-info">
-                      <h4>Mollie</h4>
-                      <p>
-                        Mollie enables businesses to accept multiple payment
-                        options with transparent pricing and a user-friendly
-                        API.
-                      </p>
-                    </div>
-                    <button class="plugin-action add">Add</button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Address Finder Section -->
-              <div class="plugin-section">
-                <h3 class="section-title">Address Finder</h3>
-                <p class="section-description">
-                  An address finder helps users quickly auto-complete their
-                  address during checkout, reducing errors and speeding up the
-                  process with suggested address options.
-                </p>
-
-                <div class="plugin-list">
-                  <div class="plugin-item">
-                    <div class="plugin-icon">
-                      <div class="icon-letter">M</div>
-                    </div>
-                    <div class="plugin-info">
-                      <h4>Loqate</h4>
-                      <p>
-                        Loqate - A global address verification and geolocation
-                        service that ensures accurate customer data for smooth
-                        checkouts and deliveries.
-                      </p>
-                    </div>
-                    <button class="plugin-action add">Add</button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Email & SMS Section -->
-              <div class="plugin-section">
-                <h3 class="section-title">Email & SMS</h3>
-                <p class="section-description">
-                  SMS and email Magento extensions offer automated
-                  notifications, order updates, and marketing campaigns to
-                  engage customers and improve communication.
-                </p>
-
-                <div class="plugin-list">
-                  <div class="plugin-item">
-                    <div class="plugin-icon">
-                      <div class="icon-letter">M</div>
-                    </div>
-                    <div class="plugin-info">
-                      <h4>Klaviyo</h4>
-                      <p>
-                        Klaviyo Email - A data-driven email marketing platform
-                        that enables ecommerce brands to create personalised,
-                        automated customer engagement campaigns.
-                      </p>
-                    </div>
-                    <button class="plugin-action add">Add</button>
-                  </div>
+            <div class="form-container">
+              <div class="sample-data-container">
+                <div id="sampleDataOptions" class="sample-data-options">
+                  <!-- Sample data options will be dynamically loaded from JSON -->
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Step 5: Summary -->
-          <div class="step-content" data-step="5">
+          <!-- Step 6: Summary -->
+          <div class="step-content" data-step="6">
             <div class="step-header">
               <h2 class="h3-headline">Summary</h2>
               <p class="p-text">
@@ -641,6 +610,19 @@
                     </div>
                   </div>
                   <p><strong>Font:</strong> Using Default Theme Font</p>
+                </div>
+              </div>
+
+              <!-- Sample Data -->
+              <div class="summary-section">
+                <h3 class="summary-title">Sample Data</h3>
+                <div class="summary-content">
+                  <p>
+                    <strong>Sample Data:</strong>
+                    <span id="summarySampleData"
+                      >Sample data will be installed</span
+                    >
+                  </p>
                 </div>
               </div>
 

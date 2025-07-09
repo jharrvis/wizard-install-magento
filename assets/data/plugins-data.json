@@ -1,0 +1,234 @@
+{
+  "payments": {
+    "title": "Payments",
+    "description": "Magento payment service provider extensions enable secure payment processing, offering multiple payment methods, fraud prevention, and integration with various payment gateways.",
+    "plugins": [
+      {
+        "id": "ppcp",
+        "name": "PPCP",
+        "description": "PayPal Complete Payments (PPCP) - A full-stack payment solution offering seamless checkout, fraud protection, and global payment method support.",
+        "icon": "https://placehold.co/40x24/003087/ffffff?text=PP",
+        "selected": true
+      },
+      {
+        "id": "fastlane",
+        "name": "Fastlane",
+        "description": "PayPal Fastlane - A one-click checkout solution that streamlines transactions and improves conversion rates for merchants.",
+        "icon": "letter:F",
+        "selected": false
+      },
+      {
+        "id": "mollie",
+        "name": "Mollie",
+        "description": "Mollie enables businesses to accept multiple payment options with transparent pricing and a user-friendly API.",
+        "icon": "letter:M",
+        "selected": false
+      },
+      {
+        "id": "stripe",
+        "name": "Stripe",
+        "description": "A comprehensive payment platform supporting credit cards, digital wallets, and local payment methods with advanced fraud protection.",
+        "icon": "letter:S",
+        "selected": false
+      },
+      {
+        "id": "adyen",
+        "name": "Adyen",
+        "description": "Global payment company offering a single platform for accepting payments anywhere, on any device.",
+        "icon": "letter:A",
+        "selected": false
+      },
+      {
+        "id": "square",
+        "name": "Square",
+        "description": "Complete commerce platform with payment processing, inventory management, and analytics.",
+        "icon": "letter:SQ",
+        "selected": false
+      }
+    ]
+  },
+  "addressFinder": {
+    "title": "Address Finder",
+    "description": "An address finder helps users quickly auto-complete their address during checkout, reducing errors and speeding up the process with suggested address options.",
+    "plugins": [
+      {
+        "id": "loqate",
+        "name": "Loqate",
+        "description": "Loqate - A global address verification and geolocation service that ensures accurate customer data for smooth checkouts and deliveries.",
+        "icon": "letter:L",
+        "selected": false
+      },
+      {
+        "id": "google_address",
+        "name": "Google Address Autocomplete",
+        "description": "Google's Places API for accurate address suggestions and autocomplete functionality.",
+        "icon": "letter:G",
+        "selected": false
+      },
+      {
+        "id": "postcode_anywhere",
+        "name": "Postcode Anywhere",
+        "description": "UK and international address lookup and validation service for accurate delivery addresses.",
+        "icon": "letter:PA",
+        "selected": false
+      }
+    ]
+  },
+  "emailSms": {
+    "title": "Email & SMS",
+    "description": "SMS and email Magento extensions offer automated notifications, order updates, and marketing campaigns to engage customers and improve communication.",
+    "plugins": [
+      {
+        "id": "klaviyo",
+        "name": "Klaviyo Email",
+        "description": "Klaviyo Email - A data-driven email marketing platform that enables ecommerce brands to create personalised, automated customer engagement campaigns.",
+        "icon": "https://placehold.co/40x24/ff6900/ffffff?text=K",
+        "selected": false
+      },
+      {
+        "id": "dotdigital",
+        "name": "DotDigital",
+        "description": "DotDigital Email - A marketing automation platform specialising in personalised email campaigns, customer segmentation, and omnichannel engagement.",
+        "icon": "https://placehold.co/40x24/009bde/ffffff?text=DD",
+        "selected": false
+      },
+      {
+        "id": "mailchimp",
+        "name": "Mailchimp",
+        "description": "All-in-one marketing platform with email marketing, automation, and audience insights.",
+        "icon": "letter:MC",
+        "selected": false
+      },
+      {
+        "id": "twilio",
+        "name": "Twilio SMS",
+        "description": "Cloud communications platform for SMS notifications, two-factor authentication, and customer engagement.",
+        "icon": "letter:T",
+        "selected": false
+      },
+      {
+        "id": "sendgrid",
+        "name": "SendGrid",
+        "description": "Cloud-based email delivery service for transactional and marketing emails with detailed analytics.",
+        "icon": "letter:SG",
+        "selected": false
+      }
+    ]
+  },
+  "taxShipping": {
+    "title": "Tax & Shipping",
+    "description": "Magento Tax & Shipping extensions automate tax calculations, manage shipping rates, offer real-time shipping options, and ensure accurate pricing for a seamless checkout experience.",
+    "plugins": [
+      {
+        "id": "shipperq",
+        "name": "ShipperHQ",
+        "description": "ShipperHQ - A shipping rate management platform that optimises checkout with real-time shipping rates, delivery options, and custom shipping rules.",
+        "icon": "https://placehold.co/40x24/ff7101/ffffff?text=SHQ",
+        "selected": false
+      },
+      {
+        "id": "avalara",
+        "name": "Avalara",
+        "description": "Automated tax compliance solution providing real-time tax calculations and filing services.",
+        "icon": "letter:AV",
+        "selected": false
+      },
+      {
+        "id": "taxjar",
+        "name": "TaxJar",
+        "description": "Sales tax automation platform with real-time calculations and reporting for e-commerce.",
+        "icon": "letter:TJ",
+        "selected": false
+      },
+      {
+        "id": "fedex",
+        "name": "FedEx Shipping",
+        "description": "Official FedEx integration for real-time shipping rates and tracking.",
+        "icon": "letter:FX",
+        "selected": false
+      },
+      {
+        "id": "ups",
+        "name": "UPS Shipping",
+        "description": "UPS shipping integration with real-time rates, tracking, and delivery options.",
+        "icon": "letter:UPS",
+        "selected": false
+      }
+    ]
+  },
+  "reviewsUgc": {
+    "title": "Reviews & UGC",
+    "description": "Magento Reviews & UGC extensions enable customers to leave product reviews, ratings, and user-generated content, boosting trust, engagement, and conversion rates.",
+    "plugins": [
+      {
+        "id": "yotpo",
+        "name": "Yotpo Reviews",
+        "description": "Yotpo Reviews - A customer review platform that helps brands collect, display, and leverage authentic reviews to build trust and drive conversions.",
+        "icon": "https://placehold.co/40x24/32be7d/ffffff?text=YP",
+        "selected": false
+      },
+      {
+        "id": "reviewsio",
+        "name": "Reviews.io",
+        "description": "Reviews.io - A review collection and management platform that enables businesses to gather customer feedback and showcase authentic ratings.",
+        "icon": "https://placehold.co/40x24/0f488a/ffffff?text=RIO",
+        "selected": false
+      },
+      {
+        "id": "trustpilot",
+        "name": "Trustpilot",
+        "description": "Global review platform helping businesses collect and display customer reviews to build trust.",
+        "icon": "letter:TP",
+        "selected": false
+      },
+      {
+        "id": "bazaarvoice",
+        "name": "Bazaarvoice",
+        "description": "Comprehensive UGC platform for reviews, ratings, Q&A, and visual content.",
+        "icon": "letter:BV",
+        "selected": false
+      }
+    ]
+  },
+  "searchMerchandising": {
+    "title": "Search, Merchandising & Recommendations",
+    "description": "Magento search, merchandising & recommendations extensions improve product discovery with advanced search, personalised recommendations, and targeted product displays for a better user experience.",
+    "plugins": [
+      {
+        "id": "klevu",
+        "name": "Klevu",
+        "description": "Klevu - An AI-powered site search and product discovery solution that enhances ecommerce experiences with smart search, merchandising, and recommendations.",
+        "icon": "https://placehold.co/40x24/009bde/ffffff?text=KL",
+        "selected": false
+      },
+      {
+        "id": "nosto",
+        "name": "Nosto",
+        "description": "Nosto - A personalisation platform that delivers AI-driven product recommendations, dynamic content, and tailored shopping experiences to boost conversions.",
+        "icon": "https://placehold.co/40x24/ff7101/ffffff?text=NS",
+        "selected": false
+      },
+      {
+        "id": "algolia",
+        "name": "Algolia",
+        "description": "Fast and relevant search-as-a-service platform with instant search and discovery capabilities.",
+        "icon": "letter:AL",
+        "selected": false
+      },
+      {
+        "id": "elasticsearch",
+        "name": "Elasticsearch",
+        "description": "Powerful search and analytics engine for fast, scalable search functionality.",
+        "icon": "letter:ES",
+        "selected": false
+      },
+      {
+        "id": "dynamic_yield",
+        "name": "Dynamic Yield",
+        "description": "Personalization platform offering product recommendations, A/B testing, and behavioral targeting.",
+        "icon": "letter:DY",
+        "selected": false
+      }
+    ]
+  }
+}
